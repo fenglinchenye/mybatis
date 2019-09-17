@@ -30,6 +30,8 @@ import org.apache.ibatis.io.Resources;
 
 /**
  * @author Clinton Begin
+ * 序列化对象存储
+ * 对象序列化成字节数组（需要提供cache 容器）
  */
 public class SerializedCache implements Cache {
 

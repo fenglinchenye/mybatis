@@ -19,7 +19,8 @@ import java.sql.Connection;
 
 /**
  * Creates an {@link SqlSession} out of a connection or a DataSource
- *
+ * 创建一个SqlSession 连接
+ * （同一个会话多个sql 的执行是以SqlSession 为单位）
  * @author Clinton Begin
  */
 public interface SqlSessionFactory {

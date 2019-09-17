@@ -19,6 +19,7 @@ import org.apache.ibatis.cache.Cache;
 
 /**
  * @author Clinton Begin
+ * 基于时效的缓存 TTL (默认清除时间是1小时)
  */
 public class ScheduledCache implements Cache {
 
@@ -28,7 +29,8 @@ public class ScheduledCache implements Cache {
 
   public ScheduledCache(Cache delegate) {
     this.delegate = delegate;
-    this.clearInterval = 60 * 60 * 1000; // 1 hour
+    // 1 hour
+    this.clearInterval = 60 * 60 * 1000;
     this.lastClear = System.currentTimeMillis();
   }
 
@@ -80,6 +82,10 @@ public class ScheduledCache implements Cache {
     return delegate.equals(obj);
   }
 
+  /**
+   * 清除过期数据
+   * @return
+   */
   private boolean clearWhenStale() {
     if (System.currentTimeMillis() - lastClear > clearInterval) {
       clear();

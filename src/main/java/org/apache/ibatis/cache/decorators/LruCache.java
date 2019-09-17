@@ -22,7 +22,7 @@ import org.apache.ibatis.cache.Cache;
 
 /**
  * Lru (least recently used) cache decorator.
- *
+ * LRU 缓存使用LinkHashMap实现{@link LinkedHashMap}
  * @author Clinton Begin
  */
 public class LruCache implements Cache {
@@ -69,7 +69,7 @@ public class LruCache implements Cache {
 
   @Override
   public Object getObject(Object key) {
-    keyMap.get(key); //touch
+    keyMap.get(key);
     return delegate.getObject(key);
   }
 

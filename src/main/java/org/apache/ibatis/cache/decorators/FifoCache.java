@@ -22,7 +22,7 @@ import org.apache.ibatis.cache.Cache;
 
 /**
  * FIFO (first in, first out) cache decorator.
- *
+ * 借助LinkedList 的链表的FIFO 结构来实现FIFO 缓存
  * @author Clinton Begin
  */
 public class FifoCache implements Cache {
