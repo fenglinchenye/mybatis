@@ -28,6 +28,8 @@ import org.apache.ibatis.reflection.ExceptionUtil;
 import org.apache.ibatis.session.SqlSession;
 
 /**
+ * Mapper 代理 为mapper 对象生成代理接口
+ * 以mapper 接口为单位
  * @author Clinton Begin
  * @author Eduardo Macarron
  */
@@ -40,6 +42,10 @@ public class MapperProxy<T> implements InvocationHandler, Serializable {
   private static final Method privateLookupInMethod;
   private final SqlSession sqlSession;
   private final Class<T> mapperInterface;
+  /*
+   此缓存是以mapperInterface 为单位进行的缓存。相同的mapperInterface 才会拥有同一个methodCache 对象
+   因为此代理对象是按照接口ClassLoader生成
+   */
   private final Map<Method, MapperMethod> methodCache;
 
   public MapperProxy(SqlSession sqlSession, Class<T> mapperInterface, Map<Method, MapperMethod> methodCache) {
@@ -77,8 +83,10 @@ public class MapperProxy<T> implements InvocationHandler, Serializable {
   @Override
   public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
     try {
+      // 方法是Object 超类的方法
       if (Object.class.equals(method.getDeclaringClass())) {
         return method.invoke(this, args);
+//        当且仅当此方法是Java语言规范定义的默认方法时
       } else if (method.isDefault()) {
         if (privateLookupInMethod == null) {
           return invokeDefaultMethodJava8(proxy, method, args);
@@ -89,11 +97,13 @@ public class MapperProxy<T> implements InvocationHandler, Serializable {
     } catch (Throwable t) {
       throw ExceptionUtil.unwrapThrowable(t);
     }
+    // 缓存并获取MapperMethod 对象
     final MapperMethod mapperMethod = cachedMapperMethod(method);
     return mapperMethod.execute(sqlSession, args);
   }
 
   private MapperMethod cachedMapperMethod(Method method) {
+    // 以method 为定义进行 缓存 MapperMethod 如果不存在则放入
     return methodCache.computeIfAbsent(method,
         k -> new MapperMethod(mapperInterface, method, sqlSession.getConfiguration()));
   }

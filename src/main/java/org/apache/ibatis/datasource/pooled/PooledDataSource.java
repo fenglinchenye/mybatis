@@ -34,6 +34,8 @@ import org.apache.ibatis.logging.LogFactory;
 /**
  * This is a simple, synchronous, thread-safe database connection pool.
  *
+ * 连接池
+ *
  * @author Clinton Begin
  */
 public class PooledDataSource implements DataSource {
